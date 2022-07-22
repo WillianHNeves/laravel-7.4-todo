@@ -82,13 +82,16 @@ class TodoController extends Controller
      */
     public function destroy(Todo $todo)
     {
+        $user = $todo->user;
+
         try {
             // Verificar se TODO é do usuário
             if ($todo->user_id !== $user->id) {
                 return response('', 403);
             }
 
-            $todo->delete();
+            $todo->delete($todo->id);
+            
         } catch (\Throwable $th) {
             logger()->error($th);
             return redirect('/dashboard')->with('error', 'Erro ao deletar TODO');
