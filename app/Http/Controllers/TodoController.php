@@ -18,7 +18,9 @@ class TodoController extends Controller
 
         $todos = Todo::where('user_id', $user->id)->get();
 
-        return view('dashboard', compact('user', 'todos'));
+        $ativos = Todo::where();
+
+        return view('dashboard', compact('user', 'todos', 'ativos'));
     }
 
     /**
@@ -66,6 +68,7 @@ class TodoController extends Controller
             }
 
             $todo->update(['is_complete' => true]);
+
         } catch (\Throwable $th) {
             logger()->error($th);
             return redirect('/dashboard')->with('error', 'Erro ao completar TODO');
@@ -91,6 +94,10 @@ class TodoController extends Controller
             }
 
             $todo->delete($todo->id);
+            if ($todo->is_complete === false) {
+                $todo->update(['is_complete' => false]);
+            }
+
             
         } catch (\Throwable $th) {
             logger()->error($th);
